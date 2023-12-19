@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventos do Deputado</title>
+</head>
+<body>
+
+  <h1>Eventos do Deputado</h1>
+
+  <ul id="eventosList"></ul>
+
+  <script>
+    // Função que faz a requisição para o endpoint do serviço usando fetch
+    async function listarEventosDeputado(id) {
+      try {
+        const response = await fetch(`http://localhost:8080/deputados/eventos/${id}`);
+        if (!response.ok) {
+          throw new Error(`Erro na requisição: ${response.statusText}`);
+        }
+        const data = await response.json();
+        return data || [];
+      } catch (error) {
+        console.error('Erro ao obter eventos do deputado:', error);
+        return [];
+      }
+    }
+
+    // Função que cria a página HTML com os eventos
+    function criarPaginaHTML(eventos) {
+      const eventosList = document.getElementById('eventosList');
+
+      if (!Array.isArray(eventos)) {
+        console.error('A resposta do serviço não está no formato esperado.');
+        return;
+      }
+
+      eventos.forEach((evento) => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `ID: ${evento.id}, Descrição: ${evento.descricao}, Tipo: ${evento.descricaoTipo}, Situação: ${evento.situacao}`;
+        eventosList.appendChild(listItem);
+      });
+    }
+
+    // Extrai o ID da URL da página
+    const urlParams = new URLSearchParams(window.location.search);
+    const deputadoId = urlParams.get('id');
+
+    // Exemplo de uso
+    listarEventosDeputado(deputadoId)
+      .then((eventos) => {
+        criarPaginaHTML(eventos);
+      })
+      .catch((err) => console.error('Erro:', err));
+  </script>
+
+</body>
+</html>

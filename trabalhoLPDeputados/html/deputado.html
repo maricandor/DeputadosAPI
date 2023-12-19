@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deputados</title>
+    <link rel="stylesheet" href="../css/deputado.css">
+    <script src="../js/script.js"></script>
+</head>
+
+<body onload="loadDeputadoInfo()">
+
+    <h1 id="nome"></h1>
+    <div>
+        <img id="deputadoFoto" alt="Foto do Deputado">
+    </div>
+    <p id="email"></p>
+    <p id="idLegislatura"></p>
+    <p id="siglaPartido"></p>
+    <p id="siglaUf"></p>
+
+    <h2>Eventos</h2>
+
+    <ul id="eventosList">
+
+    </ul>
+
+    <button onclick="window.location.href='inscrever.html'">Inscrever-se</button>
+    <button onclick="window.location.href='eventosDepu.html?id=' + getUrlParameter('id')">Ver Eventos</button>
+
+    <script>
+        async function loadDeputadoInfo() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = urlParams.get('id');
+
+                const response = await fetch(`http://localhost:8080/deputados/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+                const data = await response.json();
+
+                console.log('ID do deputado:', id);
+                console.log('Dados recebidos do deputado:', data);
+
+                if (data) {
+                    document.getElementById('nome').textContent = data.nome;
+                    document.getElementById('email').textContent = data.email;
+                    document.getElementById('idLegislatura').textContent = data.idLegislatura;
+                    document.getElementById('siglaPartido').textContent = data.siglaPartido;
+                    document.getElementById('siglaUf').textContent = data.siglaUf;
+
+                    if (data.urlFoto) {
+                        const deputadoFoto = document.getElementById('deputadoFoto');
+                        deputadoFoto.src = data.urlFoto;
+                        deputadoFoto.alt = `Foto de ${data.nome}`;
+                    }
+
+                    const eventosList = document.getElementById('eventosList');
+
+                    if (data.eventos && Array.isArray(data.eventos) && data.eventos.length > 0) {
+                        data.eventos.forEach(evento => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = evento.descricaoTipo;
+                            eventosList.appendChild(listItem);
+                        });
+                    } else {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = 'O deputado não tem eventos registrados.';
+                        eventosList.appendChild(listItem);
+                    }
+                } else {
+                    console.log('Dados do deputado não encontrados.');
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar informações do deputado:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDeputadoInfo);
+
+        // Função para extrair parâmetros da URL
+        function getUrlParameter(name) {
+            name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+    </script>
+
+</body>
+
+</html>

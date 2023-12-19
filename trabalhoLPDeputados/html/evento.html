@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Evento</title>
+    <link href="../css/evento.css">
+</head>
+
+<body>
+
+    <h1>Detalhes do Evento</h1>
+    <div id="detalhesEvento"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+    const id = obterIdDoEventoDaURL();
+
+    try {
+        const response = await fetch(`http://localhost:8080/eventos/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = await response.json();
+
+        console.log('Detalhes do evento:', data);
+
+        const detalhesEvento = document.getElementById('detalhesEvento');
+
+        const descricaoTipo = document.createElement('p');
+        descricaoTipo.textContent = data.descricaoTipo;
+
+        const descricao = document.createElement('p');
+        descricao.textContent = data.descricao; 
+
+        const situacao = document.createElement('p')
+        situacao.textContent = data.situaçao;
+
+
+        detalhesEvento.appendChild(descricaoTipo);
+        detalhesEvento.appendChild(descricao);
+        detalhesEvento.appendChild(situacao);
+
+    } catch (error) {
+        console.error('Erro ao carregar detalhes do evento:', error);
+    }
+});
+
+function obterIdDoEventoDaURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('id');
+}
+    </script>
+
+<button onclick="window.location.href='eventsList.html'">Voltar</button>
+
+
+</body>
+
+</html>
