@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="../css/home.css">
+</head>
+
+<body>
+
+    <h1>Home</h1>
+    <h2>Lista de Deputados</h2>
+
+    <ul id="listaDeputados"></ul>
+
+    <script>
+
+        async function carregarDeputados() {
+            event.preventDefault();
+            try {
+                const response = await fetch('http://localhost:8080/deputados', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+                const data = await response.json();
+
+                console.log('Dados recebidos:', data);
+
+                const listaDeputados = document.getElementById('listaDeputados');
+                listaDeputados.innerHTML = '';
+
+                data.forEach(deputado => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+
+                    const deputadoUrl = `deputado.html?id=${deputado.id}`;
+                    link.href = deputadoUrl;
+                    link.textContent = deputado.nome;
+
+                    listItem.appendChild(link);
+                    listaDeputados.appendChild(listItem);
+                    console.log(deputado);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar deputados:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarDeputados);
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Eventos</title>
+    <link href="../css/eventsList.css">
+</head>
+
+<body>
+
+    <h1>Eventos</h1>
+    <ul id="listaEventos"></ul>
+    <button onclick="window.location.href='home.html'">Voltar</button>
+
+
+    <script>
+
+        async function carregarEventos() {
+            try {
+                const response = await fetch('http://localhost:8080/eventos', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json', 
+                    },
+                });
+                const data = await response.json();
+
+                console.log('Dados recebidos:', data);
+
+                const listaEventos = document.getElementById('listaEventos');
+                listaEventos.innerHTML = '';
+
+
+                data.forEach(evento => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    
+                    const eventoUrl = `evento.html?id=${evento.id}`;
+                    link.href = eventoUrl;
+                    link.textContent = evento.descricao;
+
+                    listItem.appendChild(link);
+                    listaEventos.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar eventos:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarEventos);
+    </script>
+
+</body>
+
+</html>
