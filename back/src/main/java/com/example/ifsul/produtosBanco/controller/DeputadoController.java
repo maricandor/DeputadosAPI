@@ -59,7 +59,7 @@ public class DeputadoController {
             return new ResponseEntity<>(Map.of("mensagem", "IDs de Evento ou Deputado não podem ser nulos"), HttpStatus.BAD_REQUEST);
         }
         // Chama o serviço para vincular o evento ao deputado
-        deputadoService.vincularEvento(vincularReq.idEvento(), vincularReq.idDeputado());
+        deputadoService.vincularEvento(vincularReq.idDeputado(), vincularReq.idEvento());
         // Retorna uma mensagem de sucesso como resposta HTTP
         Map<String, String> mensagemSucesso = Map.of("mensagem", "Vínculo de evento realizado com sucesso.");
         return new ResponseEntity<>(mensagemSucesso, HttpStatus.OK);

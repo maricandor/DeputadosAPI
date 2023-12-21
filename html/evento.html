@@ -18,7 +18,7 @@
     <div id="detalhesEvento"></div>
 
     <!-- Botão para voltar à lista de eventos -->
-    <button onclick="window.location.href='eventsList.html'">Voltar</button>
+    <button onclick="window.location.href='eventsList.html'">Ver Todos</button>
 
     <script>
         // Aguarda o carregamento completo do DOM antes de executar o script
@@ -50,13 +50,13 @@
                 const descricao = document.createElement('p');
                 descricao.textContent = `Descrição: ${data.descricao}`;
 
-                const situacao = document.createElement('p');
-                situacao.textContent = `Situação: ${data.situacao}`;
+                const situaçao = document.createElement('p');
+                situaçao.textContent = `Situação: ${data.situaçao}`;
 
                 // Adiciona os elementos de parágrafo à div de detalhes do evento
                 detalhesEvento.appendChild(descricaoTipo);
                 detalhesEvento.appendChild(descricao);
-                detalhesEvento.appendChild(situacao);
+                detalhesEvento.appendChild(situaçao);
 
             } catch (error) {
                 // Exibe um erro no console se houver algum problema ao carregar detalhes do evento
@@ -71,8 +71,8 @@
         }
     </script>
 
-    <!-- Botão para voltar à lista de eventos -->
-    <button onclick="window.location.href='eventsList.html'">Voltar</button>
+    <!-- Botão para voltar à homepage -->
+    <button onclick="window.location.href='home.html'">Voltar</button>
 
 </body>
 

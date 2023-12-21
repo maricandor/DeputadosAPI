@@ -4,8 +4,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 public record VincularEventoRequest(
         @NotNull
-        Long idEvento,
+        Long idDeputado,
         @NotNull
-        Long idDeputado
+        Long idEvento
 ) {
 }

@@ -21,15 +21,15 @@ public class Eventos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String uri;
-    private String situacao;
     private String descricaoTipo;
     private String descricao;
+    private String situacao;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "deputado_eventos",
-            joinColumns = @JoinColumn(name = "deputado_id"),
-            inverseJoinColumns = @JoinColumn(name = "eventos_id"))
+            joinColumns = @JoinColumn(name = "eventos_id"),
+            inverseJoinColumns = @JoinColumn(name = "deputado_id"))
     private List<Deputado> deputados;
 
     public Eventos(String descricao, LocalDateTime data, String cidade, String situacao, String uri) {

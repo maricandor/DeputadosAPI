@@ -63,7 +63,7 @@ public class DeputadoService {
 	}
 
 	// Vincula um evento a um deputado
-	public MensagemResponse vincularEvento(@NotNull Long idEvento, @NotNull Long idDeputado) {
+	public MensagemResponse vincularEvento(@NotNull Long idDeputado, @NotNull Long idEvento) {
 		Optional<Eventos> optionalEvento = eventosRepository.findById(idEvento);
 		Optional<Deputado> optionalDeputado = deputadoRepository.findById(idDeputado);
 
