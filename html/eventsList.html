@@ -2,53 +2,70 @@
 <html lang="en">
 
 <head>
+    <!-- Metadados da página -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Eventos</title>
-    <link href="../css/eventsList.css">
+    <!-- Inclui o arquivo CSS para estilização -->
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
+    <!-- Título principal -->
     <h1>Eventos</h1>
+    <!-- Lista não ordenada para exibir a lista de eventos -->
     <ul id="listaEventos"></ul>
+    <!-- Botão para voltar à página inicial -->
     <button onclick="window.location.href='home.html'">Voltar</button>
 
-
     <script>
-
+        // Função assíncrona para carregar a lista de eventos quando o DOM estiver pronto
         async function carregarEventos() {
             try {
+                // Faz uma requisição GET para obter a lista de eventos do backend
                 const response = await fetch('http://localhost:8080/eventos', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json', 
                     },
                 });
+                // Converte a resposta para formato JSON
                 const data = await response.json();
 
+                // Log dos dados recebidos
                 console.log('Dados recebidos:', data);
 
+                // Obtém a referência da lista de eventos no DOM
                 const listaEventos = document.getElementById('listaEventos');
                 listaEventos.innerHTML = '';
 
-
+                // Itera sobre a lista de eventos e cria elementos de lista para cada um
                 data.forEach(evento => {
+                    // Cria um elemento <li> para cada evento
                     const listItem = document.createElement('li');
+                    // Cria um elemento <a> (link) para a descrição do evento
                     const link = document.createElement('a');
                     
+                    // Constrói a URL do evento usando seu ID
                     const eventoUrl = `evento.html?id=${evento.id}`;
+                    // Define o atributo href do link
                     link.href = eventoUrl;
+                    // Define o texto do link como a descrição do evento
                     link.textContent = evento.descricao;
 
+                    // Adiciona o link como filho do elemento <li>
                     listItem.appendChild(link);
+                    // Adiciona o elemento <li> à lista de eventos
                     listaEventos.appendChild(listItem);
                 });
             } catch (error) {
+                // Exibe um erro no console se houver algum problema ao carregar eventos
                 console.error('Erro ao carregar eventos:', error);
             }
         }
 
+        // Adiciona um listener de evento para chamar a função de carregar eventos quando o DOM estiver pronto
         document.addEventListener('DOMContentLoaded', carregarEventos);
     </script>
 

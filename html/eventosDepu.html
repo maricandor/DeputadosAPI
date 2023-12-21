@@ -2,52 +2,75 @@
 <html lang="en">
 
 <head>
+  <!-- Metadados da página -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Eventos do Deputado</title>
+  <link rel="stylesheet" href="../css/styleDepu.css">
 </head>
 
 <body>
 
+  <!-- Título principal -->
   <h1>Eventos do Deputado</h1>
 
+  <!-- Lista não ordenada para exibir os eventos do deputado -->
   <ul id="eventosList"></ul>
+  <!-- Botão para voltar à página inicial -->
   <button onclick="window.location.href='home.html'">Voltar</button>
 
   <script>
+    // Função assíncrona para obter a lista de eventos do deputado
     async function listarEventosDeputado(id) {
       try {
+        // Obtém o ID do deputado a partir dos parâmetros da URL
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
+
+        // Faz uma requisição GET para obter os eventos do deputado do backend
         const response = await fetch(`http://localhost:8080/deputados/eventos/${id}`);
+
+        // Verifica se a resposta está OK, senão lança um erro
         if (!response.ok) {
           throw new Error(`Erro na requisição: ${response.statusText}`);
         }
+
+        // Converte a resposta para formato JSON
         const data = await response.json();
+
+        // Retorna os dados obtidos ou um array vazio em caso de erro
         return data || [];
       } catch (error) {
+        // Exibe um erro no console se houver algum problema ao obter eventos do deputado
         console.error('Erro ao obter eventos do deputado:', error);
         return [];
       }
     }
+
+    // Função para criar elementos HTML com base nos eventos obtidos
     function criarPaginaHTML(eventos) {
       const eventosList = document.getElementById('eventosList');
 
+      // Verifica se a resposta do serviço está no formato esperado (um array)
       if (!Array.isArray(eventos)) {
         console.error('A resposta do serviço não está no formato esperado.');
         return;
       }
 
+      // Itera sobre os eventos e cria elementos de lista para cada um
       eventos.forEach((evento) => {
         const listItem = document.createElement('li');
+        // Adiciona informações do evento ao elemento de lista
         listItem.innerHTML = `Descrição: ${evento.descricao}, Tipo: ${evento.descricaoTipo}, Situação: ${evento.situacao}`;
         eventosList.appendChild(listItem);
       });
     }
 
+    // Obtém o ID do deputado a partir dos parâmetros da URL
     const urlParams = new URLSearchParams(window.location.search);
     const deputadoId = urlParams.get('id');
 
+    // Chama a função para obter e exibir os eventos do deputado
     listarEventosDeputado(deputadoId)
       .then((eventos) => {
         criarPaginaHTML(eventos);

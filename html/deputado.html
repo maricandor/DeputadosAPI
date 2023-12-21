@@ -2,40 +2,63 @@
 <html lang="en">
 
 <head>
+    <!-- Metadados da página -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deputados</title>
-    <link rel="stylesheet" href="../css/deputado.css">
-    <script src="../js/script.js"></script>
+    <!-- Link para o arquivo de estilo CSS -->
+    <link rel="stylesheet" href="../css/styleD.css">
 </head>
 
 <body onload="loadDeputadoInfo()">
 
+    <!-- Título principal da página -->
     <h1 id="nome"></h1>
+    <!-- Seção para exibir informações do deputado -->
     <div>
         <img id="deputadoFoto" alt="Foto do Deputado">
     </div>
-    <p id="email"></p>
-    <p id="idLegislatura"></p>
-    <p id="siglaPartido"></p>
-    <p id="siglaUf"></p>
+    
+    <div>
+        <label for="email">Email:</label>
+        <p id="email"></p>
+    </div>
+    
+    <div>
+        <label for="idLegislatura">ID da Legislatura:</label>
+        <p id="idLegislatura"></p>
+    </div>
+    
+    <div>
+        <label for="siglaPartido">Sigla do Partido:</label>
+        <p id="siglaPartido"></p>
+    </div>
+    
+    <div>
+        <label for="siglaUf">Sigla da UF:</label>
+        <p id="siglaUf"></p>
+    </div>
+    <!-- Título secundário para a seção de eventos -->
+    <!--   <h2>Eventos</h2> -->
 
-    <h2>Eventos</h2>
+    <!-- Lista de eventos do deputado -->
+ <!--    <ul id="eventosList"></ul> -->
 
-    <ul id="eventosList">
-
-    </ul>
-
+    <!-- Botões para navegação e interação -->
     <button onclick="window.location.href='home.html'">Voltar</button>
     <button onclick="window.location.href='inscrever.html'">Inscrever-se</button>
     <button onclick="window.location.href='eventosDepu.html?id=' + getUrlParameter('id')">Ver Eventos</button>
 
+    <!-- Script JavaScript -->
     <script>
+        // Função para carregar as informações do deputado
         async function loadDeputadoInfo() {
             try {
+                // Obtém o ID do deputado da URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const id = urlParams.get('id');
 
+                // Faz uma requisição GET para obter as informações do deputado do backend
                 const response = await fetch(`http://localhost:8080/deputados/${id}`, {
                     method: 'GET',
                     headers: {
@@ -43,11 +66,13 @@
                     },
                 });
 
+                // Converte a resposta para formato JSON
                 const data = await response.json();
 
                 console.log('ID do deputado:', id);
                 console.log('Dados recebidos do deputado:', data);
 
+                // Atualiza os elementos HTML com as informações do deputado
                 if (data) {
                     document.getElementById('nome').textContent = data.nome;
                     document.getElementById('email').textContent = data.email;
@@ -55,30 +80,35 @@
                     document.getElementById('siglaPartido').textContent = data.siglaPartido;
                     document.getElementById('siglaUf').textContent = data.siglaUf;
 
+                    // Se houver uma URL de foto, exibe a foto do deputado
                     if (data.urlFoto) {
                         const deputadoFoto = document.getElementById('deputadoFoto');
                         deputadoFoto.src = data.urlFoto;
                         deputadoFoto.alt = `Foto de ${data.nome}`;
                     }
-
                 } else {
                     console.log('Dados do deputado não encontrados.');
                 }
+
+                // Obtém e exibe os eventos do deputado
                 const eventosDeputado = await listarEventosDeputado(id);
                 criarPaginaHTML(eventosDeputado);
 
             } catch (error) {
+                // Exibe um erro no console se houver algum problema ao carregar informações do deputado
                 console.error('Erro ao carregar informações do deputado:', error);
             }
         }
+
+        // Função para listar os eventos do deputado
         async function listarEventosDeputado(id) {
             try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const id = urlParams.get('id');
+                // Faz uma requisição GET para obter os eventos do deputado do backend
                 const response = await fetch(`http://localhost:8080/deputados/eventos/${id}`);
                 if (!response.ok) {
                     throw new Error(`Erro na requisição: ${response.statusText}`);
                 }
+                // Converte a resposta para formato JSON
                 const data = await response.json();
                 return data || [];
             } catch (error) {
@@ -87,8 +117,7 @@
             }
         }
 
-
-
+        // Aguarda o carregamento completo do DOM antes de executar a função
         document.addEventListener('DOMContentLoaded', loadDeputadoInfo);
 
         // Função para extrair parâmetros da URL

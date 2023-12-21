@@ -2,65 +2,77 @@
 <html lang="en">
 
 <head>
+    <!-- Metadados da página -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes do Evento</title>
-    <link href="../css/evento.css">
+    <!-- Link para o arquivo de estilo CSS -->
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
+    <!-- Título principal da página -->
     <h1>Detalhes do Evento</h1>
+    <!-- Div para exibir os detalhes do evento -->
     <div id="detalhesEvento"></div>
 
+    <!-- Botão para voltar à lista de eventos -->
     <button onclick="window.location.href='eventsList.html'">Voltar</button>
 
-
     <script>
+        // Aguarda o carregamento completo do DOM antes de executar o script
         document.addEventListener('DOMContentLoaded', async function () {
-    const id = obterIdDoEventoDaURL();
+            // Obtém o ID do evento da URL
+            const id = obterIdDoEventoDaURL();
 
-    try {
-        const response = await fetch(`http://localhost:8080/eventos/${id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            try {
+                // Faz uma requisição GET para obter os detalhes do evento do backend
+                const response = await fetch(`http://localhost:8080/eventos/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                // Converte a resposta para formato JSON
+                const data = await response.json();
+
+                console.log('Detalhes do evento:', data);
+
+                // Obtém a referência do elemento onde os detalhes do evento serão exibidos
+                const detalhesEvento = document.getElementById('detalhesEvento');
+
+                // Cria elementos de parágrafo para exibir os detalhes do evento
+                const descricaoTipo = document.createElement('p');
+                descricaoTipo.textContent = `Tipo: ${data.descricaoTipo}`;
+
+                const descricao = document.createElement('p');
+                descricao.textContent = `Descrição: ${data.descricao}`;
+
+                const situacao = document.createElement('p');
+                situacao.textContent = `Situação: ${data.situacao}`;
+
+                // Adiciona os elementos de parágrafo à div de detalhes do evento
+                detalhesEvento.appendChild(descricaoTipo);
+                detalhesEvento.appendChild(descricao);
+                detalhesEvento.appendChild(situacao);
+
+            } catch (error) {
+                // Exibe um erro no console se houver algum problema ao carregar detalhes do evento
+                console.error('Erro ao carregar detalhes do evento:', error);
+            }
         });
 
-        const data = await response.json();
-
-        console.log('Detalhes do evento:', data);
-
-        const detalhesEvento = document.getElementById('detalhesEvento');
-
-        const descricaoTipo = document.createElement('p');
-        descricaoTipo.textContent = data.descricaoTipo;
-
-        const descricao = document.createElement('p');
-        descricao.textContent = data.descricao; 
-
-        const situacao = document.createElement('p')
-        situacao.textContent = data.situaçao;
-
-
-        detalhesEvento.appendChild(descricaoTipo);
-        detalhesEvento.appendChild(descricao);
-        detalhesEvento.appendChild(situacao);
-
-    } catch (error) {
-        console.error('Erro ao carregar detalhes do evento:', error);
-    }
-});
-
-function obterIdDoEventoDaURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('id');
-}
+        // Função para obter o ID do evento da URL
+        function obterIdDoEventoDaURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
     </script>
 
-<button onclick="window.location.href='eventsList.html'">Voltar</button>
-
+    <!-- Botão para voltar à lista de eventos -->
+    <button onclick="window.location.href='eventsList.html'">Voltar</button>
 
 </body>
 

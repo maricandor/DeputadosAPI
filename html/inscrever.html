@@ -5,35 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscrever</title>
-    <link rel="stylesheet" href="../css/inscrever.css">
-    <script src="../js/script.js"></script>
+    <!-- Inclui o arquivo CSS para estilização -->
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
     <h1>Inscrever-se</h1>
 
+    <!-- Formulário para inserir o ID do Deputado -->
     <form id="formInscrever">
-        <label for="idDeputado">ID Deputado:</label><br><br>
-        <input type="text" id="idDeputado" name="idDeputado"><br><br>
+        <label for="idDeputado">ID Deputado:</label>
+        <input type="text" id="idDeputado" name="idDeputado">
     </form>
 
+    <!-- Dropdown para selecionar um evento -->
     <select id="eventosDropdown" onchange="carregarDetalhesEvento(this.value)">
-    </select><br><br>
+    </select>
 
-    <button type="button" onclick="inscreverEvento()">Inscrever-se</button><br><br>
-
+    <!-- Div para exibir detalhes do evento selecionado -->
     <div id="detalhesEvento">
     </div>
-
-
+    <!-- Botão para realizar a inscrição no evento -->
+    <button type="button" onclick="inscreverEvento()">Inscrever-se</button>
+    <!-- Botão para voltar à página inicial -->
     <button onclick="window.location.href='home.html'">Voltar</button>
-    <button onclick="window.location.href='eventosDepu.html'">Ver Todos</button>
-
 
     <script>
+        // Função assíncrona para carregar os eventos no dropdown quando a página é carregada
         async function carregarEventosDropdown() {
             try {
+                // Faz uma requisição GET para obter a lista de eventos do backend
                 const response = await fetch('http://localhost:8080/eventos', {
                     method: 'GET',
                     headers: {
@@ -42,16 +44,20 @@
                 });
                 const data = await response.json();
 
+                // Log dos dados recebidos
                 console.log('Dados recebidos:', data);
 
+                // Preenche o dropdown com os eventos obtidos
                 const dropdown = document.getElementById('eventosDropdown');
                 dropdown.innerHTML = '';
 
+                // Adiciona uma opção padrão ao dropdown
                 const defaultOption = document.createElement('option');
                 defaultOption.value = '';
                 defaultOption.textContent = 'Selecione um evento';
                 dropdown.appendChild(defaultOption);
 
+                // Preenche o dropdown com as opções de eventos
                 data.forEach(evento => {
                     const option = document.createElement('option');
                     option.value = evento.id;
@@ -59,6 +65,7 @@
                     dropdown.appendChild(option);
                 });
 
+                // Adiciona um evento de change ao dropdown para carregar detalhes do evento selecionado
                 dropdown.onchange = function () {
                     const selectedEventoId = dropdown.value;
                     carregarDetalhesEvento(selectedEventoId);
@@ -68,14 +75,17 @@
             }
         }
 
+        // Adiciona um listener de evento para carregar eventos no dropdown quando o DOM estiver pronto
         document.addEventListener('DOMContentLoaded', carregarEventosDropdown);
 
+        // Função assíncrona para carregar detalhes de um evento selecionado
         async function carregarDetalhesEvento(eventoId) {
             if (!eventoId) {
                 return;
             }
 
             try {
+                // Faz uma requisição GET para obter detalhes de um evento específico
                 const response = await fetch(`http://localhost:8080/eventos/${eventoId}`, {
                     method: 'GET',
                     headers: {
@@ -84,6 +94,7 @@
                 });
                 const detalhesEvento = await response.json();
 
+                // Exibe detalhes do evento na div 'detalhesEvento'
                 const detalhesEventoDiv = document.getElementById('detalhesEvento');
                 detalhesEventoDiv.innerHTML = `<p>Detalhes do Evento:</p>
                                 <p>Descrição: ${detalhesEvento.descricao}</p>`;
@@ -92,35 +103,40 @@
             }
         }
 
-
+        // Função assíncrona para realizar a inscrição em um evento
         async function inscreverEvento() {
-    const idDeputado = document.getElementById('idDeputado').value;
-    const idEventoSelect = document.getElementById('eventosDropdown');
-    const idEvento = idEventoSelect.value;
+            // Obtém valores dos campos
+            const idDeputado = document.getElementById('idDeputado').value;
+            const idEventoSelect = document.getElementById('eventosDropdown');
+            const idEvento = idEventoSelect.value;
 
-    try {
-        const response = await fetch('http://localhost:8080/deputados/vincular', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                idEvento: idEvento,
-                idDeputado: idDeputado
-            }),
-        });
-        const responseData = await response.json();
-        console.log('Resposta do backend:', responseData);
+            try {
+                // Faz uma requisição POST para realizar a inscrição
+                const response = await fetch('http://localhost:8080/deputados/vincular', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        idEvento: idEvento,
+                        idDeputado: idDeputado
+                    }),
+                });
+                const responseData = await response.json();
 
-        if (response.ok) {
-            console.log('Sucesso:', responseData.mensagem);
-        } else {
-            console.log('Erro:', responseData);
-        }
+                // Log da resposta do backend
+                console.log('Resposta do backend:', responseData);
 
-    } catch (error) {
-        console.error('Erro ao vincular evento:', error);
-    }
+                // Exibe sucesso ou erro com base na resposta do backend
+                if (response.ok) {
+                    alert('Sucesso: ' + responseData.mensagem);
+                } else {
+                    alert('Erro: ' + responseData.erro);
+                }
+
+            } catch (error) {
+                console.error('Erro ao vincular evento:', error);
+            }
         }
     </script>
 
